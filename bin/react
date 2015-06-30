@@ -2,16 +2,21 @@
 'use strict';
 
 var commander = require('commander');
-var cli = require('../');
+var cli = require('../'),
+    fs = require('fs'),
+    path = require('path');
 
 commander
   .version(require('../package.json').version)
   .usage('[source file]')
-  .option('-p, --props [props]', 'Props to pass into the component')
+  .option('-s, --settings [settings]', 'Settings')
+  .option('-d, --data [data]', 'Data')
   .parse(process.argv);
 
 if (commander.args[0]) {
-    var html = cli.render(commander.args[0], commander.props);
+    var html = cli.render(commander.args[0], commander.settings, commander.data);
+    var parentDir = path.resolve(process.cwd());
+    fs.writeFileSync(parentDir + '/output.html', html);
     console.log(html);
 } else {
   commander.help();
